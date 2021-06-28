@@ -7,6 +7,7 @@ package it.polito.tdp.crimes;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.crimes.model.Adiacenza;
 import it.polito.tdp.crimes.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,16 +26,16 @@ public class CrimesController {
     private URL location;
 
     @FXML // fx:id="boxCategoria"
-    private ComboBox<?> boxCategoria; // Value injected by FXMLLoader
+    private ComboBox<String> boxCategoria; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxAnno"
-    private ComboBox<?> boxAnno; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxAnno; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnAnalisi"
     private Button btnAnalisi; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxArco"
-    private ComboBox<?> boxArco; // Value injected by FXMLLoader
+    private ComboBox<Adiacenza> boxArco; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnPercorso"
     private Button btnPercorso; // Value injected by FXMLLoader
@@ -44,14 +45,28 @@ public class CrimesController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
+   
+    	boxArco.getItems().clear();
     	txtResult.clear();
     	txtResult.appendText("Crea grafo...\n");
+    	String categoria=boxCategoria.getValue();
+    	int giorno=boxAnno.getValue();
+    	model.CreaGrafo(giorno, categoria);
+    	txtResult.appendText(model.grafoRecap()+"\n");
+    	txtResult.appendText(model.massimo(giorno, categoria)+"\n");
+    	boxArco.getItems().clear();
+    	boxArco.getItems().addAll(model.massimo(giorno, categoria));
+    	
+    	
     }
 
     @FXML
     void doCalcolaPercorso(ActionEvent event) {
     	txtResult.clear();
     	txtResult.appendText("Calcola percorso...\n");
+    	Adiacenza a=boxArco.getValue();
+    	txtResult.appendText(model.ricorsione2(a)+"\n");
+    	txtResult.appendText(model.ricorsione2(a).size()+"\n");
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -67,5 +82,8 @@ public class CrimesController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	boxAnno.getItems().addAll(model.getGG());
+    	boxCategoria.getItems().addAll(model.getReati());
+    	
     }
 }
